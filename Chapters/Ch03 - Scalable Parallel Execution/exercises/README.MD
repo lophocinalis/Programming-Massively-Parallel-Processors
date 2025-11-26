@@ -191,6 +191,9 @@ It is a good practice to use the __syncthreads() instruction so our code will be
 
 *11. A student mentioned that he was able to multiply two 1024 × 1024 matrices by using a tiled matrix multiplication code with 32 × 32 thread blocks. He is using a CUDA device that allows up to 512 threads per block and up to 8 blocks per SM. He further mentioned that each thread in a thread block calculates one element of the result matrix. What would be your reaction and why*?
 
+> [!CAUTION]
+> The second part is likely wrong. Original version is as below.
+
 ```
 The maximum number of threads per block is 512.
 32 * 32 = 1024 threads per block so it is not possible to use a tiled matrix multiplication code with 32 × 32 thread blocks.
@@ -198,4 +201,12 @@ The maximum number of threads per block is 512.
 We have 8 blocks per SM so the least amount of threads per block should be 512 / 8 = 64.
 
 Possible choices for block dimensions are: 8x8, 16x16
+```
+> [!CAUTION]
+> Right version is likely:
+```
+The maximum number of threads per block is 512.
+32 * 32 = 1024 threads per block so it is not possible to use a tiled matrix multiplication code with 32 × 32 thread blocks.
+
+We have 8 blocks per SM so the maximum amount of threads should be 512 * 8 < 1024 * 1024.
 ```
