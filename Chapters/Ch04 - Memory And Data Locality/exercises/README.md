@@ -139,6 +139,8 @@ B.
 
 *10.To manipulate tiles, a new CUDA programmer has written the following device kernel, which will transpose each tile in a matrix. The tiles are of size BLOCK_WIDTH by BLOCK_WIDTH, and each of the dimensions of matrix A is known to be a multiple of BLOCK_WIDTH. The kernel invocation and code are shown below. BLOCK_WIDTH is known at compile time, but could be set anywhere from 1 to 20.*
 
+> [!CAUTION]
+> Original version is as below.
 ```C
 dim3 blockDim(BLOCK_WIDTH,BLOCK_WIDTH);
 dim3 gridDim(A_width/blockDim.x,A_height/blockDim.y);
@@ -155,6 +157,28 @@ __global__ void BlockTranspose(float* A_elements, int A_width, int A_height)
 
     blockA[threadIdx.y][threadIdx.x]=A_elements[baseIdx];
     A_elements[baseIdx]=blockA[threadIdx.x][threadIdx.y];
+}
+```
+> [!CAUTION]
+> Way easier to read as (correction included):
+```C
+dim3 blockDim(BLOCK_WIDTH,BLOCK_WIDTH);
+dim3 gridDim(A_width/blockDim.x,A_height/blockDim.y);
+
+BlockTranspose<<<gridDim, blockDim>>>(A, A_width, A_height);
+
+
+__global__ void BlockTranspose(float* A_elements, int A_width, int A_height)
+{
+    __shared__ float blockA[BLOCK_WIDTH][BLOCK_WIDTH];
+    
+    int row = blockIdx.y * BLOCK_WIDTH + threadIdx.y;
+    int col = blockIdx.x * BLOCK_WIDTH + threadIdx.x;
+    int globalIdx = row * A_width + col;
+
+    blockA[threadIdx.y][threadIdx.x] = A_elements[globalIdx];
+    __syncthreads();
+    A_elements[globalIdx] = blockA[threadIdx.x][threadIdx.y];
 }
 ```
 
