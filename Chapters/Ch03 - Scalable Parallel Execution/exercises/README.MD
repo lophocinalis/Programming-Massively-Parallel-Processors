@@ -147,6 +147,7 @@ Thread 8: (3.0 - 2.9) / 3.0 = 0.1 / 3.0 = 0.033 (03.3%)
 ---
 
 This is a very stupid question. Just skip it.
+
 *9. Indicate which of the following assignments per multiprocessor is possible. In the case where it is not possible, indicate the limiting factor(s).*
 
 - *A. 8 blocks with 128 threads each on a device with compute capability 1.0*
